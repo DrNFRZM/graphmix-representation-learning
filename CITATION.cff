@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite it as below. If you use the data, please also cite the UCI Adult dataset listed under references."
+title: "graphmix-representation-learning"
+abstract: >-
+  A controlled comparison of flat-feature, autoencoder and graph-neural-network
+  representations of heterogeneous tabular records (UCI Adult), with several graph
+  constructions and ablations. Research code, not a library.
+type: software
+authors:
+  - family-names: Nikbakhsh Jorshari
+    given-names: Farzam
+    email: nikbakhshfarzam@gmail.com
+version: 0.1.0
+license: MIT
+keywords:
+  - graph neural networks
+  - representation learning
+  - tabular data
+  - graph construction
+references:
+  - type: data
+    title: "Adult"
+    authors:
+      - family-names: Becker
+        given-names: Barry
+      - family-names: Kohavi
+        given-names: Ronny
+    year: 1996
+    publisher:
+      name: "UCI Machine Learning Repository"
+    doi: "10.24432/C5XW20"
+    url: "https://archive.ics.uci.edu/dataset/2/adult"
+    license: CC-BY-4.0

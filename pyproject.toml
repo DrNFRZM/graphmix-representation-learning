@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "graphmix"
+version = "0.1.0"
+description = "Flat features vs. autoencoders vs. GNN encoders for representation learning on heterogeneous tabular data (UCI Adult)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Farzam Nikbakhsh Jorshari", email = "nikbakhshfarzam@gmail.com" }]
+keywords = ["graph neural networks", "representation learning", "tabular data", "graph construction"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "pandas>=2.1",
+    "scikit-learn>=1.4",
+    "matplotlib>=3.8",
+    "pyyaml>=6.0",
+    "torch>=2.2",
+    "torch_geometric>=2.5",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "ruff",
+    "mypy",
+    "types-PyYAML",
+    "pandas-stubs",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra"
+filterwarnings = [
+    "ignore:Sparse CSR tensor support is in beta:UserWarning",
+    "ignore::DeprecationWarning:matplotlib",  # old matplotlib with a recent pyparsing
+]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "NPY"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_ignores = true
+warn_redundant_casts = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+files = ["src", "scripts"]
+
+[[tool.mypy.overrides]]
+module = ["torch_geometric.*", "sklearn.*", "scipy.*"]
+ignore_missing_imports = true
