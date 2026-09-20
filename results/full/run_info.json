@@ -1,0 +1,24 @@
+{
+ "config": "full",
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "rows_after_cleaning": 42468,
+ "rows_used": 42468,
+ "duplicates_removed": 6374,
+ "positive_rate_after_cleaning": 0.246,
+ "versions": {
+  "python": "3.11.15",
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "scipy": "1.17.1",
+  "scikit-learn": "1.9.1",
+  "torch": "2.14.0+cpu",
+  "torch_geometric": "2.8.0.post1",
+  "matplotlib": "3.11.2"
+ }
+}
