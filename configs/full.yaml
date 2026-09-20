@@ -1,0 +1,79 @@
+# Main experiment: every row of UCI Adult that survives cleaning (42,468 after exact duplicates are
+# removed), five seeds. A seed fixes the stratified 60/20/20 split, the corruption views, the
+# subsets of the low-label probes and the network initialisation.
+#
+# Nothing here was tuned against probe metrics. lr, mask_ratio, dim, k and cat_cost are round numbers
+# that were fixed before any run. hidden (64), steps (2000) and n_views (8) were set with the compute
+# budget in mind (40 to 50 minutes per seed for all methods on two CPU cores). steps was read off the
+# validation reconstruction loss of a 3000-step development run on seed 0, where it was still falling
+# slowly (MLP: 0.524 at step 2000, 0.514 at step 3000). All learned methods share every one of these
+# values. See docs/design_decisions.md and, for what this does to the conclusions,
+# docs/research_note.md.
+name: full
+seeds: [0, 1, 2, 3, 4]
+
+data:
+  raw_dir: data/raw/adult
+  files: [adult.data, adult.test]
+  n_rows: null
+  min_freq: 0.005
+  val_frac: 0.2
+  test_frac: 0.2
+
+graph:
+  k: 10
+  cat_cost: 1.0
+
+model:
+  hidden: 64
+  dim: 16
+
+train:
+  steps: 2000
+  lr: 0.003
+  weight_decay: 0.0
+  mask_ratio: 0.3
+  n_views: 8
+  eval_every: 50
+  device: cpu
+
+evaluation:
+  c_grid: [0.01, 0.1, 1.0, 10.0, 100.0]
+  label_sizes: [50, 200, 1000]
+  label_repeats: 10
+  knn_k: 25
+  tsne_points: 3000
+  hgb_reference: true
+
+methods:
+  # no neural network
+  - {name: raw, kind: raw}
+  - {name: pca, kind: pca}
+  - {name: prop_knn, kind: prop_knn}
+  - {name: prop_rand, kind: prop_rand}
+  - {name: prop_bip, kind: prop_bip}
+  # learned encoders: same decoder, loss, optimiser, budget and corruption views
+  - {name: mlp_ae, kind: mlp_ae}
+  - {name: sage_selfloop, kind: sage_selfloop}
+  - {name: sage_rand, kind: sage_rand}
+  - {name: sage_knn, kind: sage_knn}
+  - {name: sage_bip, kind: sage_bip}
+  # control for the graph part of sage_bip: same weights, but value nodes pool nothing from the records that
+  # share them. Added after four seeds had been evaluated, when sage_bip was ahead of the MLP in each of
+  # them (docs/research_note.md, section 9)
+  - {name: sage_bip_nopool, kind: sage_bip_nopool}
+  # ablation: number of neighbours
+  - {name: sage_knn_k5, kind: sage_knn, k: 5}
+  - {name: sage_knn_k20, kind: sage_knn, k: 20}
+  # ablation: no input corruption (plain autoencoding). The self-loop and random versions were
+  # added after seed 0 had been trained and evaluated: without them the kNN version had no control
+  # (docs/research_note.md, section 9)
+  - {name: mlp_ae_nomask, kind: mlp_ae, mask_ratio: 0.0}
+  - {name: sage_selfloop_nomask, kind: sage_selfloop, mask_ratio: 0.0}
+  - {name: sage_rand_nomask, kind: sage_rand, mask_ratio: 0.0}
+  - {name: sage_knn_nomask, kind: sage_knn, mask_ratio: 0.0}
+  # control for optimisation speed: a self-loop GraphSAGE layer computes (W_root + W_neigh) x, which
+  # under Adam moves about twice as fast as the single weight of the MLP (docs/research_note.md, section 9)
+  - {name: mlp_ae_lr2x, kind: mlp_ae, lr: 0.006}
+  # positive control, not a method: neighbours chosen from the clean rows, which leaks the hidden cells
+  - {name: sage_knn_cleannbr, kind: sage_knn, neighbors: clean}

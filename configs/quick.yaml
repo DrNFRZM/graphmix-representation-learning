@@ -1,0 +1,58 @@
+# Smoke test: a 6,000-row stratified subsample, one seed, short training. It runs every code path of
+# the main experiment (all methods, all figures) in a few minutes on a laptop CPU, but its numbers
+# are far too noisy to interpret. Use configs/full.yaml for the actual experiment.
+name: quick
+seeds: [0]
+
+data:
+  raw_dir: data/raw/adult
+  files: [adult.data, adult.test]
+  n_rows: 6000
+  min_freq: 0.005
+  val_frac: 0.2
+  test_frac: 0.2
+
+graph:
+  k: 10
+  cat_cost: 1.0
+
+model:
+  hidden: 64
+  dim: 16
+
+train:
+  steps: 300
+  lr: 0.003
+  mask_ratio: 0.3
+  n_views: 4
+  eval_every: 30
+  device: cpu
+
+evaluation:
+  c_grid: [0.01, 0.1, 1.0, 10.0]
+  label_sizes: [50, 200]
+  label_repeats: 3
+  knn_k: 25
+  tsne_points: 1000
+  hgb_reference: true
+
+methods:
+  - {name: raw, kind: raw}
+  - {name: pca, kind: pca}
+  - {name: prop_knn, kind: prop_knn}
+  - {name: prop_rand, kind: prop_rand}
+  - {name: prop_bip, kind: prop_bip}
+  - {name: mlp_ae, kind: mlp_ae}
+  - {name: sage_selfloop, kind: sage_selfloop}
+  - {name: sage_rand, kind: sage_rand}
+  - {name: sage_knn, kind: sage_knn}
+  - {name: sage_bip, kind: sage_bip}
+  - {name: sage_bip_nopool, kind: sage_bip_nopool}
+  - {name: sage_knn_k5, kind: sage_knn, k: 5}
+  - {name: sage_knn_k20, kind: sage_knn, k: 20}
+  - {name: mlp_ae_nomask, kind: mlp_ae, mask_ratio: 0.0}
+  - {name: sage_selfloop_nomask, kind: sage_selfloop, mask_ratio: 0.0}
+  - {name: sage_rand_nomask, kind: sage_rand, mask_ratio: 0.0}
+  - {name: sage_knn_nomask, kind: sage_knn, mask_ratio: 0.0}
+  - {name: mlp_ae_lr2x, kind: mlp_ae, lr: 0.006}
+  - {name: sage_knn_cleannbr, kind: sage_knn, neighbors: clean}
