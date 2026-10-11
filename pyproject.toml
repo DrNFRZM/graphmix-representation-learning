@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "graphmix"
 version = "0.1.0"
-description = "Flat features vs. autoencoders vs. GNN encoders for representation learning on heterogeneous tabular data (UCI Adult)."
+description = "Testing whether feature-derived graphs improve tabular representations on UCI Adult."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
@@ -33,7 +33,7 @@ dependencies = [
 dev = [
     "pytest>=8",
     "ruff",
-    "mypy",
+    "mypy>=1.11,<2",
     "types-PyYAML",
     "pandas-stubs",
 ]
@@ -58,7 +58,6 @@ target-version = "py311"
 select = ["E", "F", "W", "I", "B", "UP", "NPY"]
 
 [tool.mypy]
-python_version = "3.11"
 warn_unused_ignores = true
 warn_redundant_casts = true
 check_untyped_defs = true

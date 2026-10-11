@@ -1,7 +1,7 @@
-# graphmix-representation-learning
+# GraphMix representation learning
 
-Controlled study of whether graph-based structural priors improve representation learning for
-heterogeneous tabular records. The experiments use UCI Adult and compare raw features, PCA, a
+Do graphs built from tabular records help an encoder learn better representations?
+The experiments use UCI Adult and compare raw features, PCA, a
 denoising MLP autoencoder, parameter-free propagation, and GraphSAGE over kNN, random, self-loop,
 and record-value graphs.
 
@@ -16,9 +16,21 @@ gradient-boosting reference reached `0.927 ± 0.002`.
 Values above are mean ± standard deviation across five random seeds. The seeded splits overlap, so
 the spreads are sensitivity summaries, not confidence intervals or independent replications.
 
+Check the [per-seed metrics](results/full/metrics.csv),
+[full result tables](results/full/summary.md), and
+[training losses](results/full/training_logs.csv). The
+[run configuration](results/full/config.yaml) and
+[software versions](results/full/run_info.json) describe the experiment behind these numbers.
+
+![Effect of the number of kNN neighbours, compared with flat and graph controls](results/full/figures/fig_graph_ablation.png)
+
+The [full comparison plot](results/full/figures/fig_main_comparison.png) includes every configured method.
+
 ## Reproduce a smoke run
 
 Python 3.11 or newer is required. A CPU-only PyTorch installation is sufficient.
+The [reproduction check](docs/reproducibility.md) lists the tested environment
+and distinguishes the smoke run from the committed full experiment.
 
 ```bash
 python -m venv .venv
@@ -39,9 +51,8 @@ Does a graph constructed from heterogeneous records provide a useful inductive b
 self-supervised representation learning when the graph contains no information beyond the table
 used by a non-graph encoder?
 
-The project deliberately treats a negative result as an outcome rather than a presentation problem.
-It does not claim that graph learning is ineffective in general. It shows that these particular
-constructions, encoder, objective, and controls did not establish a benefit on this benchmark.
+These particular graph constructions, encoders, objectives, and controls did not establish a
+benefit on this benchmark. That result does not establish how graph learning performs on other data.
 
 ## Dataset and scope
 
@@ -198,9 +209,8 @@ Key outputs:
 - Bitwise equality is expected only on the same platform and dependency versions; BLAS and sparse
   kernels can differ across systems.
 
-For implementation rationale and honest interview preparation, see
-[`docs/design_decisions.md`](docs/design_decisions.md) and
-[`docs/interview_guide.md`](docs/interview_guide.md).
+The [research note](docs/research_note.md) discusses the result and its limitations;
+[design decisions](docs/design_decisions.md) explains the implementation choices.
 
 ## References
 
